@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عجلة الحظ - صيانة</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* إعدادات الخلفية لتغطية الشاشة بالكامل */
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://i.imgur.com/w6yd97h.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* تصميم العجلة */
+        .wheel-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            border: 8px solid #444;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            background: #222;
+        }
+
+        /* سهم المؤشر */
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: red;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 20;
+        }
+
+        .segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: #333;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #444;
+        }
+
+        .segment span {
+            transform: rotate(45deg);
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #888;
+        }
+
+        /* تصميم الأزرار */
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        button:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #ffcc00;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>عجلة الحظ في صيانة</h1>
+        
+        <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel">
+                <!-- تقسيم العجلة لـ 8 أقسام كلها صيانة -->
+            </div>
+        </div>
+
+        <button id="spinBtn">دور العجلة الان !</button>
+        <p class="message" id="msg">عذراً، انتهت فرصتك! النظام تحت الصيانة حالياً.</p>
+    </div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const btn = document.getElementById('spinBtn');
+        const msg = document.getElementById('msg');
+        const segmentsCount = 8;
+        
+        // إنشاء أقسام العجلة برمجياً
+        for (let i = 0; i < segmentsCount; i++) {
+            const segment = document.createElement('div');
+            segment.className = 'segment';
+            segment.style.transform = `rotate(${i * (360 / segmentsCount)}deg)`;
+            segment.style.backgroundColor = i % 2 === 0 ? '#1a1a1a' : '#262626';
+            
+            const text = document.createElement('span');
+            text.innerText = 'صيانة';
+            segment.appendChild(text);
+            wheel.appendChild(segment);
+        }
+
+        btn.addEventListener('click', () => {
+            // تعطيل الزر فوراً
+            btn.disabled = true;
+            
+            // حساب دوران عشوائي كبير لضمان شكل الدوران
+            const randomRotation = Math.floor(Math.random() * 360) + 3600; 
+            wheel.style.transform = `rotate(${randomRotation}deg)`;
+
+            // بعد انتهاء الحركة (4 ثوانٍ)
+            setTimeout(() => {
+                msg.style.display = 'block';
+                btn.style.display = 'none';
+                alert("نعتذر منك، جميع الأقسام تحت الصيانة حالياً.");
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
